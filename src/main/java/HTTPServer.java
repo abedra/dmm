@@ -30,32 +30,32 @@ public class HTTPServer {
 
         while (true) {
             Socket remote = null;
+            remote = socket.accept();
+            HTTPResponse response = readRequest(remote);
+            writeResponse(remote, response);
+            remote.close();
+        }
+    }
 
-            try {
-                remote = socket.accept();
-                System.out.println("Received connection, sending response");
-                BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
+    private static HTTPResponse readRequest(Socket remote) {
+        System.out.println("Received connection, sending response");
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
+            String input = in.readLine();
+            System.out.println(input);
+            HTTPRequest request = new HTTPRequest(input);
+            RequestHandler handler = new RequestHandler(request);
+            HTTPResponse response = handler.handleRequest();
 
-                String input = in.readLine();
+            while (!input.equals("")) {
+                input = in.readLine();
                 System.out.println(input);
-                HTTPRequest request = new HTTPRequest(input);
-                RequestHandler handler = new RequestHandler(request);
-                HTTPResponse response = handler.handleRequest();
-
-                while (!input.equals("")) {
-                    input = in.readLine();
-                    System.out.println(input);
-                }
-
-                writeResponse(remote, response);
-                remote.close();
-            } catch (IOException e) {
-                System.out.println("Socket Error: " + e.getMessage());
-            } finally {
-                if (remote != null) {
-                    remote.close();
-                }
             }
+
+            return response;
+        } catch (IOException e) {
+            System.out.println("Socket Error: " + e.getMessage());
+            return null;
         }
     }
 
