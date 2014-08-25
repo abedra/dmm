@@ -8,5 +8,13 @@
     <artifactId>strangeloop</artifactId>
     <version>2014-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

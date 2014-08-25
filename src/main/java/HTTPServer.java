@@ -8,10 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class HTTPServer {
-    private static final String NOT_FOUND = "<h1>Not Found</h1>";
-    private static final String UNSUPPORTED = "<h1>Unsupported Method</h1>";
-    private static final String ERROR = "<h1>Error</h1>";
-
     protected static void start(final int port) throws IOException {
         System.out.println("Starting server on port " + port);
         System.out.println("Press Ctrl-C to abort");
@@ -43,7 +39,8 @@ public class HTTPServer {
                 String input = in.readLine();
                 System.out.println(input);
                 HTTPRequest request = new HTTPRequest(input);
-                String response = handle(request);
+                RequestHandler handler = new RequestHandler(request);
+                HTTPResponse response = handler.handleRequest();
 
                 while (!input.equals("")) {
                     input = in.readLine();
@@ -52,14 +49,8 @@ public class HTTPServer {
 
                 writeResponse(remote, response);
                 remote.close();
-            } catch (UnsupportedException e) {
-                System.out.println("Method Error: " + e.getMessage());
-                writeResponse(remote, UNSUPPORTED);
             } catch (IOException e) {
                 System.out.println("Socket Error: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Path Error: " + e.getMessage());
-                writeResponse(remote, NOT_FOUND);
             } finally {
                 if (remote != null) {
                     remote.close();
@@ -68,47 +59,13 @@ public class HTTPServer {
         }
     }
 
-    private static void writeResponse(final Socket socket, final String response) {
+    private static void writeResponse(final Socket socket, HTTPResponse response) {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
-
-            out.println("HTTP/1.0 200 OK");
-            out.println("Content-Type: text/html");
-            out.println("Server: Example");
-            out.println("");
-
-            out.println(response);
+            out.print(response.getResponse());
             out.flush();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    private static String handle(HTTPRequest request) {
-        try {
-            switch (request.getMethod()) {
-                case "POST":
-                    switch (request.getPath()) {
-                        case "encrypt":
-                            return "encrypted data";
-                        case "decrypt":
-                            return "decrypted data";
-                        default:
-                            return NOT_FOUND;
-                    }
-                case "GET":
-                    if (request.getPath().equals("/")) {
-                        return "<h1>Hello Strangeloop</h1>";
-                    } else {
-                        return NOT_FOUND;
-                    }
-                default:
-                    return UNSUPPORTED;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ERROR;
         }
     }
 }

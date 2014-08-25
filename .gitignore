@@ -13,3 +13,4 @@ hs_err_pid*
 .idea/
 strangeloop2014.iml
 target
+*.iml
