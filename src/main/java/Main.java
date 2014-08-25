@@ -1,5 +1,11 @@
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
-        HTTPServer.start(8080);
+        try {
+            HTTPServer.start(8080);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

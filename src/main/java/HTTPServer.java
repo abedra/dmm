@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class HTTPServer {
-    private final static String[] supportedMethods = {"GET", "POST"};
+    private static final String NOT_FOUND = "<h1>Not Found</h1>";
+    private static final String UNSUPPORTED = "<h1>Unsupported Method</h1>";
+    private static final String ERROR = "<h1>Error</h1>";
 
-    protected static void start(final int port) {
+    protected static void start(final int port) throws IOException {
         System.out.println("Starting server on port " + port);
         System.out.println("Press Ctrl-C to abort");
 
@@ -32,13 +33,17 @@ public class HTTPServer {
         System.out.println("Waiting for connections...");
 
         while (true) {
+            Socket remote = null;
+
             try {
-                Socket remote = socket.accept();
+                remote = socket.accept();
                 System.out.println("Received connection, sending response");
                 BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
 
                 String input = in.readLine();
-                String response = handle(remote, getURI(input));
+                System.out.println(input);
+                HTTPRequest request = new HTTPRequest(input);
+                String response = handle(request);
 
                 while (!input.equals("")) {
                     input = in.readLine();
@@ -47,8 +52,18 @@ public class HTTPServer {
 
                 writeResponse(remote, response);
                 remote.close();
+            } catch (UnsupportedException e) {
+                System.out.println("Method Error: " + e.getMessage());
+                writeResponse(remote, UNSUPPORTED);
             } catch (IOException e) {
-                System.out.println("Error :" + e.getMessage());
+                System.out.println("Socket Error: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Path Error: " + e.getMessage());
+                writeResponse(remote, NOT_FOUND);
+            } finally {
+                if (remote != null) {
+                    remote.close();
+                }
             }
         }
     }
@@ -69,30 +84,31 @@ public class HTTPServer {
         }
     }
 
-    private static String getURI(final String queryString) {
-        String[] params = queryString.split(" ");
-
-        if (Arrays.asList(supportedMethods).contains(params[0])) {
-            return params[1];
-        }
-
-        return "";
-    }
-
-    private static String handle(final Socket socket, final String uri) {
-        String[] parts = uri.split("/");
-
-        if (parts.length > 1) {
-            switch (uri.split("/")[1]) {
-                case "encrypt":
-                    return "encrypted output";
-                case "decrypt":
-                    return "decrypted output";
+    private static String handle(HTTPRequest request) {
+        try {
+            switch (request.getMethod()) {
+                case "POST":
+                    switch (request.getPath()) {
+                        case "encrypt":
+                            return "encrypted data";
+                        case "decrypt":
+                            return "decrypted data";
+                        default:
+                            return NOT_FOUND;
+                    }
+                case "GET":
+                    if (request.getPath().equals("/")) {
+                        return "<h1>Hello Strangeloop</h1>";
+                    } else {
+                        return NOT_FOUND;
+                    }
                 default:
-                    return "<h1>Not Found</h1>";
+                    return UNSUPPORTED;
+
             }
-        } else {
-            return "<h1>Hello Strangeloop</h1>";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ERROR;
         }
     }
 }
