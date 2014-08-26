@@ -1,14 +1,18 @@
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Properties;
 
 public class Crypto {
     public static byte[] encrypt(byte[] key, byte[] message) throws CryptoException {
-        SecretKey secretKey = new SecretKeySpec(key, "AES");
+        byte[] k = loadKey().getEncoded();
+        SecretKey secretKey = new SecretKeySpec(k, "AES");
         try{
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] iv = generateIv();
@@ -23,7 +27,8 @@ public class Crypto {
     }
 
     public static byte[] decrypt(byte[] key, byte[] encryptedBytes) throws CryptoException {
-        SecretKey secretKey = new SecretKeySpec(key, "AES");
+        byte[] k = loadKey().getEncoded();
+        SecretKey secretKey = new SecretKeySpec(k, "AES");
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(getIv(encryptedBytes)));
@@ -60,5 +65,32 @@ public class Crypto {
         byte[] messageBytes = new byte[length];
         System.arraycopy(encryptedBytes, 16, messageBytes, 0 ,length);
         return messageBytes;
+    }
+
+    private static Key loadKey() {
+        try {
+            Properties properties = new Properties();
+            InputStream in = Crypto.class.getResourceAsStream("server.properties");
+            properties.load(in);
+            in.close();
+            String location = properties.getProperty("keystore.location");
+            String alias = properties.getProperty("keystore.alias");
+            String password = properties.getProperty("keystore.password");
+            InputStream inputStream = new FileInputStream(location);
+            KeyStore keyStore = KeyStore.getInstance("JCEKS");
+            keyStore.load(inputStream, password.toCharArray());
+            inputStream.close();
+
+            if (!keyStore.containsAlias(alias)) {
+                throw new RuntimeException("Key alias not found");
+            }
+
+            return keyStore.getKey(alias, password.toCharArray());
+        } catch (KeyStoreException | CertificateException |
+                 NoSuchAlgorithmException | IOException |
+                 UnrecoverableKeyException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Could not load key");
+        }
     }
 }
