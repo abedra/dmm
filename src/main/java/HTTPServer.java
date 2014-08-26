@@ -1,3 +1,5 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sun.misc.Signal;
 
 import java.io.BufferedReader;
@@ -6,8 +8,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 
 public class HTTPServer {
+    private static final Logger logger = LogManager.getLogger(HTTPServer.class);
+
     protected static void start(final int port) throws IOException {
         System.out.println("Starting server on port " + port);
         System.out.println("Press Ctrl-C to abort");
@@ -22,7 +27,7 @@ public class HTTPServer {
         try {
             socket = new ServerSocket(port);
         } catch (Exception e) {
-            System.out.println("Error opening socket: " + e.getMessage());
+            logger.error("Error opening socket: " + e.getMessage());
             System.exit(1);
         }
 
@@ -37,7 +42,6 @@ public class HTTPServer {
     }
 
     private static HTTPResponse readRequest(Socket remote) {
-        System.out.println("Received connection, sending response");
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
             String input = in.readLine();
@@ -68,9 +72,11 @@ public class HTTPServer {
 
             handler.handleRequest();
 
+            logger.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
+
             return response;
         } catch (IOException e) {
-            System.out.println("Socket Error: " + e.getMessage());
+            logger.error("Socket Error: " + e.getMessage());
             return null;
         }
     }
@@ -81,7 +87,7 @@ public class HTTPServer {
             out.print(response.getResponse());
             out.flush();
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            logger.error("Error: " + e.getMessage());
         }
     }
 }
