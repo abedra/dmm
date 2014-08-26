@@ -1,12 +1,20 @@
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class RequestHandlerTest {
+    HTTPResponse response;
+
+    @Before
+    public void setUp() {
+        response = new HTTPResponse();
+    }
+
     @Test
     public void notFoundPostRequest() {
         HTTPRequest request = new HTTPRequest("POST /notfound HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.NOT_FOUND, response.getStatus());
         assertEquals("Not Found", response.getStatusMessage());
@@ -16,8 +24,8 @@ public class RequestHandlerTest {
     @Test
     public void encryptPostRequest() {
         HTTPRequest request = new HTTPRequest("POST /encrypt HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.OK, response.getStatus());
         assertEquals("OK", response.getStatusMessage());
@@ -27,8 +35,8 @@ public class RequestHandlerTest {
     @Test
     public void decryptPostRequest() {
         HTTPRequest request = new HTTPRequest("POST /decrypt HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.OK, response.getStatus());
         assertEquals("OK", response.getStatusMessage());
@@ -38,8 +46,8 @@ public class RequestHandlerTest {
     @Test
     public void notFoundGetRequest() {
         HTTPRequest request = new HTTPRequest("GET /notfound HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.NOT_FOUND, response.getStatus());
         assertEquals("Not Found", response.getStatusMessage());
@@ -49,8 +57,8 @@ public class RequestHandlerTest {
     @Test
     public void indexGetRequest() {
         HTTPRequest request = new HTTPRequest("GET / HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.OK, response.getStatus());
         assertEquals("OK", response.getStatusMessage());
@@ -60,8 +68,8 @@ public class RequestHandlerTest {
     @Test
     public void unsupportedRequest() {
         HTTPRequest request = new HTTPRequest("HEAD / HTTP/1.1");
-        RequestHandler handler = new RequestHandler(request);
-        HTTPResponse response = handler.handleRequest();
+        RequestHandler handler = new RequestHandler(request, response);
+        handler.handleRequest();
 
         assertEquals(HTTPResponse.NOT_ALLOWED, response.getStatus());
         assertEquals("Method Not Allowed", response.getStatusMessage());

@@ -1,64 +1,72 @@
+import java.util.Base64;
+
 public class RequestHandler {
     private HTTPRequest request;
+    private HTTPResponse response;
 
-    public RequestHandler(HTTPRequest request) {
+    public RequestHandler(HTTPRequest request, HTTPResponse response) {
         this.request = request;
+        this.response = response;
     }
 
-    public HTTPResponse handleRequest() {
+    public void handleRequest() {
         switch (request.getMethod()) {
             case "POST":
                 switch (request.getAction()) {
                     case "encrypt":
-                        return encrypt();
+                        encrypt();
+                        return;
                     case "decrypt":
-                        return decrypt();
+                        decrypt();
+                        return;
                     default:
-                        return notFound();
+                        notFound();
+                        return;
                 }
             case "GET":
                 if (request.getAction().equals("/")) {
-                    return index();
+                    index();
+                    return;
                 } else {
-                    return notFound();
+                    notFound();
+                    return;
                 }
             default:
-                return notAllowed();
-
+                notAllowed();
         }
     }
 
-    private HTTPResponse notFound() {
-        return new HTTPResponse(404, "Not Found", "<h1>Not Found</h1>");
+    private void notFound() {
+        response.setNotFound();
     }
 
-    private HTTPResponse notAllowed() {
-        return new HTTPResponse(405, "Method Not Allowed", "<h1>Method Not Allowed</h1>");
+    private void notAllowed() {
+        response.setNotAllowed();
     }
 
-    private HTTPResponse index() {
-        return new HTTPResponse(200, "OK", "<h1>Hello Strangeloop</h1>");
-    }
-
-    private HTTPResponse encrypt() {
-        HTTPResponse response = new HTTPResponse();
-
-        // TODO: do some encryption
-
+    private void index() {
         response.setOK();
-        response.setResponse("encrypted data");
-
-        return response;
+        response.setContent("<h1>Hello Strangeloop</h1>");
     }
 
-    private HTTPResponse decrypt() {
-        HTTPResponse response = new HTTPResponse();
+    private void encrypt() {
+        try {
+            byte[] encryptedBytes = Crypto.encrypt("ThisIsASecretKey".getBytes(), request.getPostData());
+            response.setOK();
+            response.setContent(Base64.getEncoder().encodeToString(encryptedBytes));
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
+    }
 
-        // TODO: do some decryption
-
-        response.setOK();
-        response.setResponse("decrypted data");
-
-        return response;
+    private void decrypt() {
+        byte[] decodedBytes = Base64.getDecoder().decode(request.getPostData());
+        try {
+            byte[] decryptedBytes = Crypto.decrypt("ThisIsASecretKey".getBytes(), decodedBytes);
+            response.setOK();
+            response.setContent(new String(decryptedBytes));
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
     }
 }

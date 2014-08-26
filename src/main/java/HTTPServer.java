@@ -41,15 +41,32 @@ public class HTTPServer {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
             String input = in.readLine();
-            System.out.println(input);
             HTTPRequest request = new HTTPRequest(input);
-            RequestHandler handler = new RequestHandler(request);
-            HTTPResponse response = handler.handleRequest();
+            HTTPResponse response = new HTTPResponse();
+            RequestHandler handler = new RequestHandler(request, response);
 
+            String[] parts;
             while (!input.equals("")) {
                 input = in.readLine();
-                System.out.println(input);
+                parts = input.split(": ");
+                switch(parts[0]) {
+                    case "Content-Length":
+                        request.setContentLength(Long.parseLong(parts[1]));
+                        break;
+                    case "Content-Type":
+                        request.setContentType(parts[1]);
+                }
             }
+
+            if (request.getMethod().equals("POST") && request.getContentLength() > 0) {
+                byte[] postData = new byte[(int) request.getContentLength()];
+                for (int i = 0; i < request.getContentLength(); i++) {
+                    postData[i] = (byte) in.read();
+                }
+                request.setPostData(postData);
+            }
+
+            handler.handleRequest();
 
             return response;
         } catch (IOException e) {

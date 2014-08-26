@@ -36,8 +36,16 @@ public class HTTPResponse {
         this.statusMessage = "OK";
     }
 
-    public void setResponse(String message) {
-        this.content = message;
+    public void setNotFound() {
+        this.status = 404;
+        this.statusMessage = "Not Found";
+        this.content = "<h1>Not Found</h1>";
+    }
+
+    public void setNotAllowed() {
+        this.status = 405;
+        this.statusMessage = "Method Not Allowed";
+        this.content = "<h1>Method Not Allowed</h1>";
     }
 
     public String getResponse() {
@@ -58,5 +66,9 @@ public class HTTPResponse {
 
     public String getContent() {
         return this.content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

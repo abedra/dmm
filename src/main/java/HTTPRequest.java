@@ -6,6 +6,9 @@ public class HTTPRequest {
     private String path;
     private String action;
     private String rawRequest;
+    private long contentLength;
+    private String contentType;
+    private byte[] postData;
 
     public HTTPRequest(String rawRequest) {
         this.rawRequest = rawRequest;
@@ -50,5 +53,25 @@ public class HTTPRequest {
 
         this.action = parts[parts.length - 1];
         return this.action;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public long getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(long contentLength) {
+        this.contentLength = contentLength;
+    }
+
+    public void setPostData(byte[] postData) {
+        this.postData = postData;
+    }
+
+    public byte[] getPostData() {
+        return this.postData;
     }
 }
