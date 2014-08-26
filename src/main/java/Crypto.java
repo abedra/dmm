@@ -29,8 +29,8 @@ public class Crypto {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(getIv(encryptedBytes)));
             return cipher.doFinal(getMessage(encryptedBytes));
         } catch (NoSuchPaddingException | InvalidAlgorithmParameterException |
-                NoSuchAlgorithmException | IllegalBlockSizeException |
-                BadPaddingException | InvalidKeyException e) {
+                 NoSuchAlgorithmException | IllegalBlockSizeException |
+                 BadPaddingException | InvalidKeyException e) {
             throw new CryptoException(e.getMessage());
         }
     }

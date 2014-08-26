@@ -29,8 +29,7 @@ public class HTTPServer {
         System.out.println("Waiting for connections...");
 
         while (true) {
-            Socket remote = null;
-            remote = socket.accept();
+            Socket remote = socket.accept();
             HTTPResponse response = readRequest(remote);
             writeResponse(remote, response);
             remote.close();
