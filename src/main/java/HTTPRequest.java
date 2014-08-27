@@ -1,13 +1,12 @@
 import java.util.Arrays;
 
 public class HTTPRequest {
-    private String[] supportedMethods = {"GET", "POST"};
+    private final String[] supportedMethods = {"GET", "POST"};
     private String method;
     private String path;
     private String action;
     private String rawRequest;
     private long contentLength;
-    private String contentType;
     private byte[] postData;
 
     public HTTPRequest(String rawRequest) {
@@ -53,10 +52,6 @@ public class HTTPRequest {
 
         this.action = parts[parts.length - 1];
         return this.action;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     public long getContentLength() {

@@ -24,6 +24,7 @@ public class RequestHandlerTest {
     @Test
     public void encryptPostRequest() {
         HTTPRequest request = new HTTPRequest("POST /encrypt HTTP/1.1");
+        request.setPostData("testing".getBytes());
         RequestHandler handler = new RequestHandler(request, response);
         handler.handleRequest();
 
@@ -36,6 +37,7 @@ public class RequestHandlerTest {
     public void decryptPostRequest() {
         HTTPRequest request = new HTTPRequest("POST /decrypt HTTP/1.1");
         RequestHandler handler = new RequestHandler(request, response);
+        request.setPostData("testing".getBytes());
         handler.handleRequest();
 
         assertEquals(HTTPResponse.OK, response.getStatus());

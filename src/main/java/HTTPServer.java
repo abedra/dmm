@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDateTime;
+
 
 public class HTTPServer {
     private static final Logger logger = LogManager.getLogger(HTTPServer.class);
@@ -57,8 +57,6 @@ public class HTTPServer {
                     case "Content-Length":
                         request.setContentLength(Long.parseLong(parts[1]));
                         break;
-                    case "Content-Type":
-                        request.setContentType(parts[1]);
                 }
             }
 

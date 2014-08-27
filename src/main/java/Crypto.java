@@ -2,7 +2,6 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
@@ -40,7 +39,7 @@ public class Crypto {
         }
     }
 
-    public static byte[] pack(byte[] iv, byte[] encryptedBytes) {
+    private static byte[] pack(byte[] iv, byte[] encryptedBytes) {
         byte[] finalBytes = new byte[iv.length + encryptedBytes.length];
         System.arraycopy(iv, 0, finalBytes, 0, iv.length);
         System.arraycopy(encryptedBytes, 0, finalBytes, iv.length, encryptedBytes.length);
