@@ -10,7 +10,7 @@ import java.security.cert.CertificateException;
 import java.util.Properties;
 
 public class Crypto {
-    public static byte[] encrypt(byte[] key, byte[] message) throws CryptoException {
+    public static byte[] encrypt(byte[] message) throws CryptoException {
         byte[] k = loadKey().getEncoded();
         SecretKey secretKey = new SecretKeySpec(k, "AES");
         try{
@@ -26,7 +26,7 @@ public class Crypto {
         }
     }
 
-    public static byte[] decrypt(byte[] key, byte[] encryptedBytes) throws CryptoException {
+    public static byte[] decrypt(byte[] encryptedBytes) throws CryptoException {
         byte[] k = loadKey().getEncoded();
         SecretKey secretKey = new SecretKeySpec(k, "AES");
         try {

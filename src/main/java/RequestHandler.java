@@ -51,22 +51,22 @@ public class RequestHandler {
 
     private void encrypt() {
         try {
-            byte[] encryptedBytes = Crypto.encrypt("ThisIsASecretKey".getBytes(), request.getPostData());
+            byte[] encryptedBytes = Crypto.encrypt(request.getPostData());
             response.setOK();
             response.setContent(Base64.getEncoder().encodeToString(encryptedBytes));
         } catch (CryptoException e) {
-            e.printStackTrace();
+            response.setError();
         }
     }
 
     private void decrypt() {
         byte[] decodedBytes = Base64.getDecoder().decode(request.getPostData());
         try {
-            byte[] decryptedBytes = Crypto.decrypt("ThisIsASecretKey".getBytes(), decodedBytes);
+            byte[] decryptedBytes = Crypto.decrypt(decodedBytes);
             response.setOK();
             response.setContent(new String(decryptedBytes));
         } catch (CryptoException e) {
-            e.printStackTrace();
+            response.setError();
         }
     }
 }

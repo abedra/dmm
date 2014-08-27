@@ -48,6 +48,12 @@ public class HTTPResponse {
         this.content = "<h1>Method Not Allowed</h1>";
     }
 
+    public void setError() {
+        this.status = 500;
+        this.statusMessage = "Internal Server Error";
+        this.content = "<h1>Internal Server Error</h1>";
+    }
+
     public String getResponse() {
         if (response == null) {
             return getFullResponse();
