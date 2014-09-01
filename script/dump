@@ -1,0 +1,3 @@
+#!/bin/bash
+
+jmap -dump:file=heap.hprof $1
