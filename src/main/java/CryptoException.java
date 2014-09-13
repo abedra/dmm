@@ -1,5 +1,5 @@
 public class CryptoException extends Exception {
-    public CryptoException(String message) {
+    public CryptoException(final String message) {
         super(message);
     }
 }

@@ -7,28 +7,29 @@ public class HTTPResponse {
     public static final int OK = 200;
     public static final int NOT_FOUND = 404;
     public static final int NOT_ALLOWED = 405;
+    public static final int ERROR = 500;
 
     public HTTPResponse() { }
 
     public void setOK() {
-        this.status = 200;
+        this.status = OK;
         this.statusMessage = "OK";
     }
 
     public void setNotFound() {
-        this.status = 404;
+        this.status = NOT_FOUND;
         this.statusMessage = "Not Found";
         this.content = "<h1>Not Found</h1>";
     }
 
     public void setNotAllowed() {
-        this.status = 405;
+        this.status = NOT_ALLOWED;
         this.statusMessage = "Method Not Allowed";
         this.content = "<h1>Method Not Allowed</h1>";
     }
 
     public void setError() {
-        this.status = 500;
+        this.status = ERROR;
         this.statusMessage = "Internal Server Error";
         this.content = "<h1>Internal Server Error</h1>";
     }
@@ -53,18 +54,18 @@ public class HTTPResponse {
         return this.content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
     private String getFullResponse() {
-        String CRLF = System.getProperty("line.separator");
+        String crlf = System.getProperty("line.separator");
         StringBuilder response = new StringBuilder();
 
-        response.append("HTTP/1.0 ").append(status).append(" ").append(statusMessage).append(CRLF);
-        response.append("Content-Type: text/html").append(CRLF);
-        response.append("Server: Example").append(CRLF);
-        response.append(CRLF);
+        response.append("HTTP/1.0 ").append(status).append(" ").append(statusMessage).append(crlf);
+        response.append("Content-Type: text/html").append(crlf);
+        response.append("Server: Example").append(crlf);
+        response.append(crlf);
         response.append(this.content);
 
         this.response = response.toString();

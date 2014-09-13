@@ -4,7 +4,7 @@ public class RequestHandler {
     private HTTPRequest request;
     private HTTPResponse response;
 
-    public RequestHandler(HTTPRequest request, HTTPResponse response) {
+    public RequestHandler(final HTTPRequest request, final HTTPResponse response) {
         this.request = request;
         this.response = response;
     }

@@ -1,6 +1,5 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.misc.Signal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,24 +9,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class HTTPServer {
-    private static final Logger logger = LogManager.getLogger(HTTPServer.class);
+public final class HTTPServer {
+    private HTTPServer() { }
+
+    private static final Logger LOGGER = LogManager.getLogger(HTTPServer.class);
 
     protected static void start(final int port) throws IOException {
         System.out.println("Starting server on port " + port);
         System.out.println("Press Ctrl-C to abort");
-
-        Signal.handle(new Signal("INT"), (signal) -> {
-            System.out.println("\nReceived INT, shutting down");
-            System.exit(0);
-        });
 
         ServerSocket socket = null;
 
         try {
             socket = new ServerSocket(port);
         } catch (Exception e) {
-            logger.error("Error opening socket: " + e.getMessage());
+            LOGGER.error("Error opening socket: " + e.getMessage());
             System.exit(1);
         }
 
@@ -41,7 +37,7 @@ public class HTTPServer {
         }
     }
 
-    private static HTTPResponse readRequest(Socket remote) {
+    private static HTTPResponse readRequest(final Socket remote) {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(remote.getInputStream()));
             String input = in.readLine();
@@ -53,10 +49,8 @@ public class HTTPServer {
             while (!input.equals("")) {
                 input = in.readLine();
                 parts = input.split(": ");
-                switch(parts[0]) {
-                    case "Content-Length":
-                        request.setContentLength(Long.parseLong(parts[1]));
-                        break;
+                if (parts[0].equals("Content-Length")) {
+                    request.setContentLength(Long.parseLong(parts[1]));
                 }
             }
 
@@ -70,22 +64,22 @@ public class HTTPServer {
 
             handler.handleRequest();
 
-            logger.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
+            LOGGER.info(request.getMethod() + " " + request.getPath() + " " + response.getStatus());
 
             return response;
         } catch (IOException e) {
-            logger.error("Socket Error: " + e.getMessage());
+            LOGGER.error("Socket Error: " + e.getMessage());
             return null;
         }
     }
 
-    private static void writeResponse(final Socket socket, HTTPResponse response) {
+    private static void writeResponse(final Socket socket, final HTTPResponse response) {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream());
             out.print(response.getResponse());
             out.flush();
         } catch (IOException e) {
-            logger.error("Error: " + e.getMessage());
+            LOGGER.error("Error: " + e.getMessage());
         }
     }
 }

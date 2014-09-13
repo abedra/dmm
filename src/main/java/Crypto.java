@@ -8,11 +8,15 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Properties;
 
-public class Crypto {
-    public static byte[] encrypt(byte[] message) throws CryptoException {
+public final class Crypto {
+    private Crypto() { }
+
+    private static final int IVLENGTH = 16;
+
+    public static byte[] encrypt(final byte[] message) throws CryptoException {
         byte[] k = loadKey().getEncoded();
         SecretKey secretKey = new SecretKeySpec(k, "AES");
-        try{
+        try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] iv = generateIv();
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
@@ -25,7 +29,7 @@ public class Crypto {
         }
     }
 
-    public static byte[] decrypt(byte[] encryptedBytes) throws CryptoException {
+    public static byte[] decrypt(final byte[] encryptedBytes) throws CryptoException {
         byte[] k = loadKey().getEncoded();
         SecretKey secretKey = new SecretKeySpec(k, "AES");
         try {
@@ -39,7 +43,7 @@ public class Crypto {
         }
     }
 
-    private static byte[] pack(byte[] iv, byte[] encryptedBytes) {
+    private static byte[] pack(final byte[] iv, final byte[] encryptedBytes) {
         byte[] finalBytes = new byte[iv.length + encryptedBytes.length];
         System.arraycopy(iv, 0, finalBytes, 0, iv.length);
         System.arraycopy(encryptedBytes, 0, finalBytes, iv.length, encryptedBytes.length);
@@ -47,22 +51,22 @@ public class Crypto {
     }
 
     private static byte[] generateIv() {
-        byte[] iv = new byte[16];
+        byte[] iv = new byte[IVLENGTH];
         SecureRandom random = new SecureRandom();
         random.nextBytes(iv);
         return iv;
     }
 
-    private static byte[] getIv(byte[] encryptedBytes) {
-        byte[] iv = new byte[16];
-        System.arraycopy(encryptedBytes, 0,iv, 0, 16);
+    private static byte[] getIv(final byte[] encryptedBytes) {
+        byte[] iv = new byte[IVLENGTH];
+        System.arraycopy(encryptedBytes, 0, iv, 0, IVLENGTH);
         return iv;
     }
 
-    private static byte[] getMessage(byte[] encryptedBytes) {
-        int length = (encryptedBytes.length - 16);
+    private static byte[] getMessage(final byte[] encryptedBytes) {
+        int length = (encryptedBytes.length - IVLENGTH);
         byte[] messageBytes = new byte[length];
-        System.arraycopy(encryptedBytes, 16, messageBytes, 0 ,length);
+        System.arraycopy(encryptedBytes, IVLENGTH, messageBytes, 0, length);
         return messageBytes;
     }
 

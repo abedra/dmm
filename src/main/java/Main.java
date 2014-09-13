@@ -1,9 +1,13 @@
 import java.io.IOException;
 
-public class Main {
-    public static void main(String[] args) {
+public final class Main {
+    private Main() { }
+
+    private static final int PORT = 8080;
+
+    public static void main(final String[] args) {
         try {
-            HTTPServer.start(8080);
+            HTTPServer.start(PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
