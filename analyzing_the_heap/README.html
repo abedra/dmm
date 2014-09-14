@@ -1,0 +1,433 @@
+<!DOCTYPE HTML>
+<html lang="en-US" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <title>Analyzing the Heap | Deterministic Memory Management on the JVM</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 1.0.2">
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+        
+    
+    
+    
+    <link rel="next" href="../byte_arrays/README.html" />
+    
+    
+    <link rel="prev" href="../encryptdecrypt/README.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+<link rel="stylesheet" href="../gitbook/style.css">
+
+
+        
+    <div class="book"  data-level="2.5" data-basepath=".." data-revision="1410729756710">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+    	
+    	
+    	
+
+        
+
+        
+    
+        
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="../index.html">
+                        <i class="fa fa-check"></i>
+                        
+                         Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1" data-path="the_problem/README.html">
+            
+                
+                    <a href="../the_problem/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                         The Problem
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2" data-path="an_example/README.html">
+            
+                
+                    <a href="../an_example/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                         An Example
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="2.1" data-path="processing_the_request/README.html">
+            
+                
+                    <a href="../processing_the_request/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.1.</b>
+                        
+                         Processing the Request
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.2" data-path="handling_the_request/README.html">
+            
+                
+                    <a href="../handling_the_request/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.2.</b>
+                        
+                         Handling the Request
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.3" data-path="generating_the_response/README.html">
+            
+                
+                    <a href="../generating_the_response/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.3.</b>
+                        
+                         Generating the Response
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.4" data-path="encryptdecrypt/README.html">
+            
+                
+                    <a href="../encryptdecrypt/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.4.</b>
+                        
+                         Encrypt/Decrypt
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter active" data-level="2.5" data-path="analyzing_the_heap/README.html">
+            
+                
+                    <a href="../analyzing_the_heap/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.5.</b>
+                        
+                         Analyzing the Heap
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3" data-path="byte_arrays/README.html">
+            
+                
+                    <a href="../byte_arrays/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                         Byte Arrays
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="4" data-path="strings/README.html">
+            
+                
+                    <a href="../strings/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                         Strings
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="5" data-path="going_off_heap/README.html">
+            
+                
+                    <a href="../going_off_heap/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                         Going Off Heap
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank" class="gitbook-link">Published using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Toggle summary"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Toggle search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle font settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle share dropdown"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">Twitter</button>
+                <button type="button" data-sharing="google-plus" class="button">Google</button>
+                <button type="button" data-sharing="facebook" class="button">Facebook</button>
+                <button type="button" data-sharing="weibo" class="button">Weibo</button>
+                <button type="button" data-sharing="instapaper" class="button">Instapaper</button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Share on Google Plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Share on Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Share on Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../" >Deterministic Memory Management on the JVM</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-gitbook_3">
+                    
+                        <h1 id="analyzing-the-heap">Analyzing the Heap</h1>
+<p>After the request is finalized we can take a look at the heap of the running instance to see what
+is left. The first thing we need to do is dump the current heap to a file for analysis.</p>
+<pre><code class="lang-sh">jmap -dump:file=heap.hprof &lt;process_id&gt;
+</code></pre>
+<p>We will use this file in our analysis. Keeping in the spirit of using tools provided by the
+language, we will use <code>jvisualvm</code> to analyze our file. We will launch the tool and load our heap
+dump. Before we go searching we are going to get a better idea of what to search for. This should
+be considered cheating, as an attacker wouldn&#39;t have the key before looking for it. For the
+purpose of demonstration we can isolate our search given the information and get to the issue
+faster.</p>
+<p>The following code will load our keystore and print the encryption key:</p>
+<h2 id="grabbing-the-encryption-key">Grabbing the encryption key</h2>
+<pre><code class="lang-java"><span class="hljs-keyword">import</span> java.io.FileInputStream;
+<span class="hljs-keyword">import</span> java.io.IOException;
+<span class="hljs-keyword">import</span> java.io.InputStream;
+<span class="hljs-keyword">import</span> java.security.*;
+<span class="hljs-keyword">import</span> java.security.cert.CertificateException;
+<span class="hljs-keyword">import</span> java.util.Arrays;
+<span class="hljs-keyword">import</span> java.util.Properties;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DumpKey</span> </span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(String[] args) {
+        Key key = loadKey();
+        System.out.println(Arrays.toString(key.getEncoded()));
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Key <span class="hljs-title">loadKey</span>() {
+        <span class="hljs-keyword">try</span> {
+            Properties properties = <span class="hljs-keyword">new</span> Properties();
+            InputStream in = Crypto.class.getResourceAsStream(<span class="hljs-string">"server.properties"</span>);
+            properties.load(in);
+            in.close();
+            String location = properties.getProperty(<span class="hljs-string">"keystore.location"</span>);
+            String alias = properties.getProperty(<span class="hljs-string">"keystore.alias"</span>);
+            String password = properties.getProperty(<span class="hljs-string">"keystore.password"</span>);
+            InputStream inputStream = <span class="hljs-keyword">new</span> FileInputStream(location);
+            KeyStore keyStore = KeyStore.getInstance(<span class="hljs-string">"JCEKS"</span>);
+            keyStore.load(inputStream, password.toCharArray());
+            inputStream.close();
+
+            <span class="hljs-keyword">return</span> keyStore.getKey(alias, password.toCharArray());
+        } <span class="hljs-keyword">catch</span> (KeyStoreException | CertificateException |
+                NoSuchAlgorithmException | IOException |
+                UnrecoverableKeyException e) {
+            e.printStackTrace();
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">"Could not load key"</span>);
+        }
+    }
+}
+</code></pre>
+<p>We can invoke our code using the following:</p>
+<pre><code class="lang-sh">$ mvn <span class="hljs-keyword">exec</span>:java -Dexec.mainClass=DumpKey
+
+[-<span class="hljs-number">28</span>, -<span class="hljs-number">114</span>, -<span class="hljs-number">114</span>, -<span class="hljs-number">114</span>, <span class="hljs-number">124</span>, -<span class="hljs-number">52</span>, -<span class="hljs-number">60</span>, <span class="hljs-number">77</span>, <span class="hljs-number">2</span>, -<span class="hljs-number">92</span>, <span class="hljs-number">119</span>, -<span class="hljs-number">53</span>, <span class="hljs-number">57</span>, -<span class="hljs-number">123</span>, <span class="hljs-number">117</span>, <span class="hljs-number">6</span>]
+</code></pre>
+<p>Now that we have our key we can narrow our search using the OQL console. The following query:</p>
+<pre><code>select x from byte[] x where x.length == 16 &amp;&amp; x[0] == -28 &amp;&amp; x[15] == 6
+</code></pre><p>Produces these results. The query is quite simple and just asks the heap for all instances of
+byte[] that are sixteen elements long (the length of and AES-128 key) where the first element
+equals -28 and the last element equals 6. It is entirely possible that we get a match that isn&#39;t
+our key, but we could easily extend the query to be exact if we needed to. We see the following
+results.</p>
+<p><img src="key_query.png" alt="Key Query"></p>
+<p>If we click on any of the results we see the key we are looking for.</p>
+<p><img src="key.png" alt="Key"></p>
+<p>What is interesting here is that we see many copies of our key (14 to be exact) on the heap.
+This is after starting the server and performing one encrypt and one decrypt request. We can now
+see the profliferation of key material and the need to better understand what is happening as the
+request is processed.</p>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="../encryptdecrypt/README.html" class="navigation navigation-prev " aria-label="Previous page: Encrypt/Decrypt"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="../byte_arrays/README.html" class="navigation navigation-next " aria-label="Next page: Byte Arrays"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="../gitbook/app.js"></script>
+
+    
+    <script src="https://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="../gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>
