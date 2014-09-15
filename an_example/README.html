@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="2" data-basepath=".." data-revision="1410729756710">
+    <div class="book"  data-level="2" data-basepath=".." data-revision="1410784702307">
     
 
 <div class="book-summary">
@@ -319,38 +319,30 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_2">
+                    <section class="normal" id="section-gitbook_3">
                     
                         <h1 id="an-example">An Example</h1>
-<p>In order to introduce the problem, an example program has been created. It uses a real world
-scenario to demonstrate the current problems. During implementation a few assumptions were made:</p>
+<p>In order to introduce the problem, an example program has been created. It uses a real world scenario to demonstrate the current problems. During implementation a few assumptions were made:</p>
 <ul>
 <li>Implemented using Java 8 with no addtional libraries (except log4j)</li>
 <li>Uses common practice encryption mechanisms</li>
 <li>Coded with common Java idioms and verified using checkstyle</li>
 </ul>
-<p>The example implementation is an HTTP server that encrypts and decrypts data. You could label it
-and encryption service or a software based HSM. Quite a few liberties were taken with this
-implementation and it is only intended as a piece of example code and is not suitable for
-production use. The basic functionality is as follows:</p>
+<p>The example implementation is an HTTP server that encrypts and decrypts data. You could label it and encryption service or a software based HSM. Quite a few liberties were taken with this
+implementation and it is only intended as a piece of example code and is not suitable for production use. The basic functionality is as follows:</p>
 <pre><code>$ mvn exec:java -Dexec.mainClass=Main
 
-$ curl -d &quot;Secret Data&quot; &quot;http://localhost:8080/encrypt&quot;
+$ curl -d &quot;Secret Data&quot; &quot;localhost:8080/encrypt&quot;
 liWKzWRcBfMF0wSMHXkFpSqBZQaa5f1BUUHVWoorBoc=
 
-$curl -d &quot;liWKzWRcBfMF0wSMHXkFpSqBZQaa5f1BUUHVWoorBoc=&quot; &quot;http://localhost:8080/decrypt&quot;
+$curl -d &quot;liWKzWRcBfMF0wSMHXkFpSqBZQaa5f1BUUHVWoorBoc=&quot; &quot;localhost:8080/decrypt&quot;
 Secret Data
-</code></pre><p>It provides no other real functionality. The implementation offers a few additional responses
-which were only used as implementation references.</p>
+</code></pre><p>It provides no other real functionality. The implementation offers a few additional responses which were only used as implementation references.</p>
 <h2 id="limitations-of-the-example">Limitations of the Example</h2>
-<p>The example code does not follow the HTTP protocol specification nor does it implement what
-constitues a proper web server. It was built up from just the pieces needed to provide a
-complete demonstration of the problem documented.</p>
+<p>The example code does not follow the HTTP protocol specification nor does it implement what constitues a proper web server. It was built up from just the pieces needed to provide a complete demonstration of the problem documented.</p>
 <h2 id="why-didnt-you-use-x">Why didn&#39;t you use X?</h2>
-<p>There are plenty of libraries and non-Java JVM languages that could have been used to create
-this example. The point of doing this in Java and not using any additonal libararies is to try to
-cut down on the depth of the stack and to be able to modify the implementation to test out the
-different theories provided throughout the book.</p>
+<p>There are plenty of libraries and non-Java JVM languages that could have been used to create this example. The point of doing this in Java and not using any additonal libararies is to try to
+cut down on the depth of the stack and to be able to modify the implementation to test out the different theories provided throughout the book.</p>
 
                     
                     </section>

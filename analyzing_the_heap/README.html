@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="2.5" data-basepath=".." data-revision="1410729756710">
+    <div class="book"  data-level="2.5" data-basepath=".." data-revision="1410784702307">
     
 
 <div class="book-summary">
@@ -319,21 +319,15 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_3">
+                    <section class="normal" id="section-gitbook_4">
                     
                         <h1 id="analyzing-the-heap">Analyzing the Heap</h1>
-<p>After the request is finalized we can take a look at the heap of the running instance to see what
-is left. The first thing we need to do is dump the current heap to a file for analysis.</p>
+<p>After the request is finalized we can take a look at the heap of the running instance to see what is left. The first thing we need to do is dump the current heap to a file for analysis.</p>
 <pre><code class="lang-sh">jmap -dump:file=heap.hprof &lt;process_id&gt;
 </code></pre>
-<p>We will use this file in our analysis. Keeping in the spirit of using tools provided by the
-language, we will use <code>jvisualvm</code> to analyze our file. We will launch the tool and load our heap
-dump. Before we go searching we are going to get a better idea of what to search for. This should
-be considered cheating, as an attacker wouldn&#39;t have the key before looking for it. For the
-purpose of demonstration we can isolate our search given the information and get to the issue
-faster.</p>
+<p>We will use this file in our analysis. Keeping in the spirit of using tools provided by the language, we will use <code>jvisualvm</code> to analyze our file. We will launch the tool and load our heap dump. Before we go searching we are going to get a better idea of what to search for. This should be considered cheating, as an attacker wouldn&#39;t have the key before looking for it. For the purpose of demonstration we can isolate our search given the information and get to the issue faster.</p>
 <p>The following code will load our keystore and print the encryption key:</p>
-<h2 id="grabbing-the-encryption-key">Grabbing the encryption key</h2>
+<p><strong><em>DumpKey.java</em></strong></p>
 <pre><code class="lang-java"><span class="hljs-keyword">import</span> java.io.FileInputStream;
 <span class="hljs-keyword">import</span> java.io.IOException;
 <span class="hljs-keyword">import</span> java.io.InputStream;

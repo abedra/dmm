@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="2.4" data-basepath=".." data-revision="1410729756710">
+    <div class="book"  data-level="2.4" data-basepath=".." data-revision="1410784702307">
     
 
 <div class="book-summary">
@@ -319,16 +319,10 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_1">
+                    <section class="normal" id="section-gitbook_2">
                     
                         <h1 id="encryptdecrypt">Encrypt/Decrypt</h1>
-<p>For our encrypt and decrypt examples we will be using <code>AES-128-CBC</code>, or 128 bit AES encryption
-using the <a href="http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher-block_chaining_.28CBC.29" target="_blank">Cipher Block Chaining</a>
-mode of operation. This mode requires us to provide an initialization vector unique to each
-message that will be distributed along with the message. The encryption key is stored in a Java
-<a href="http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html" target="_blank">KeyStore</a>. The key will be
-loaded during the encrypt/decrypt process. The key will not be loaded with the intent of keeping
-it in memory for the duration of program execution. Let&#39;s take a look at our <code>Crypto</code> class:</p>
+<p>For our encrypt and decrypt examples we will be using <code>AES-128-CBC</code>, or 128 bit AES encryption using the <a href="http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher-block_chaining_.28CBC.29" target="_blank">Cipher Block Chaining</a> mode of operation. This mode requires us to provide an initialization vector unique to each message that will be distributed along with the message. The encryption key is stored in a Java <a href="http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html" target="_blank">KeyStore</a>. The key will be loaded during the encrypt/decrypt process. The key will not be loaded with the intent of keeping it in memory for the duration of program execution. Let&#39;s take a look at our <code>Crypto</code> class:</p>
 <pre><code class="lang-java"><span class="hljs-keyword">import</span> javax.crypto.*;
 <span class="hljs-keyword">import</span> javax.crypto.spec.IvParameterSpec;
 <span class="hljs-keyword">import</span> javax.crypto.spec.SecretKeySpec;
@@ -360,10 +354,7 @@ it in memory for the duration of program execution. Let&#39;s take a look at our
         }
     }
 </code></pre>
-<p>First, we encounter our <code>encrypt()</code> method. This method takes a <code>byte[]</code> containing the message we
-wish to encrypt. It loads the encryption key, generates the initialization vector, and encrypts
-the message. Finally, it packs the initialization vector and the encrypted message together and
-returns it to the caller. Let&#39;s take a look at the supporting methods.</p>
+<p>First, we encounter our <code>encrypt()</code> method. This method takes a <code>byte[]</code> containing the message we wish to encrypt. It loads the encryption key, generates the initialization vector, and encrypts the message. Finally, it packs the initialization vector and the encrypted message together and returns it to the caller. Let&#39;s take a look at the supporting methods. You will notice that all of the methods in the <code>Crypto</code> class are static. This is an attempt to avoid instantiating an object that could possibly hold on to data longer than it needs to. It is also a generally accepted practice for data that is purely derived.</p>
 <pre><code class="lang-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Key <span class="hljs-title">loadKey</span>() {
         <span class="hljs-keyword">try</span> {
             Properties properties = <span class="hljs-keyword">new</span> Properties();
@@ -391,8 +382,7 @@ returns it to the caller. Let&#39;s take a look at the supporting methods.</p>
         }
     }
 </code></pre>
-<p>We have seen the <code>loadKey()</code> method previously. We used it to dump our encryption key so we could
-search for it on the heap.</p>
+<p>We have seen the <code>loadKey()</code> method previously. We used it to dump our encryption key so we could search for it on the heap.</p>
 <pre><code class="lang-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] <span class="hljs-title">generateIv</span>() {
         <span class="hljs-keyword">byte</span>[] iv = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[IVLENGTH];
         SecureRandom random = <span class="hljs-keyword">new</span> SecureRandom();
@@ -407,9 +397,7 @@ search for it on the heap.</p>
         <span class="hljs-keyword">return</span> finalBytes;
     }
 </code></pre>
-<p>Next we have our <code>generateIv()</code> and <code>pack()</code> methods. They are pretty self explanatory. The only
-thing to note here is that we are using Java&#39;s <code>SecureRandom</code> class to produce the data for our
-initialization vector. Now we can look at our <code>decrypt()</code> method.</p>
+<p>Next we have our <code>generateIv()</code> and <code>pack()</code> methods. They are pretty self explanatory. The only thing to note here is that we are using Java&#39;s <code>SecureRandom</code> class to produce the data for our initialization vector. Now we can look at our <code>decrypt()</code> method.</p>
 <pre><code class="lang-java">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] <span class="hljs-title">decrypt</span>(<span class="hljs-keyword">final</span> <span class="hljs-keyword">byte</span>[] encryptedBytes) <span class="hljs-keyword">throws</span> CryptoException {
         <span class="hljs-keyword">byte</span>[] k = loadKey().getEncoded();
         SecretKey secretKey = <span class="hljs-keyword">new</span> SecretKeySpec(k, <span class="hljs-string">"AES"</span>);
@@ -424,9 +412,7 @@ initialization vector. Now we can look at our <code>decrypt()</code> method.</p>
         }
     }
 </code></pre>
-<p>As we expect <code>decrypt()</code> is a lot like <code>encrypt()</code>. It loads the key, extracts the initialization
-vector and the message, and performs the decrypt operation. the following support methods are used
-to unpack the message into the proper parts.</p>
+<p>As we expect <code>decrypt()</code> is a lot like <code>encrypt()</code>. It loads the key, extracts the initialization vector and the message, and performs the decrypt operation. the following support methods are used to unpack the message into the proper parts.</p>
 <pre><code class="lang-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] <span class="hljs-title">getIv</span>(<span class="hljs-keyword">final</span> <span class="hljs-keyword">byte</span>[] encryptedBytes) {
         <span class="hljs-keyword">byte</span>[] iv = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[IVLENGTH];
         System.arraycopy(encryptedBytes, <span class="hljs-number">0</span>, iv, <span class="hljs-number">0</span>, IVLENGTH);
@@ -441,13 +427,7 @@ to unpack the message into the proper parts.</p>
     }
 }
 </code></pre>
-<p>There are a few things we are missing in this code. The most noteworthy is that the encryption is
-not being verified. Normally there would be an additional step where we use <code>HMAC</code> to sign the
-encrypted payload. This ensures that the message was not tampered with. It was intentionally left
-out of the example because it provides no further demonstration of the problem. Normally you would
-also see a <code>Base64</code> encode/decode operation along with the encryption. That is being done in our
-<code>RequestHandler</code> object. There are many other ciphers and block modes of operation. Some are
-arguably better at this task. This example code aims to provide a sample that is still considered
+<p>There are a few things we are missing in this code. The most noteworthy is that the encryption is not being verified. Normally there would be an additional step where we use <code>HMAC</code> to sign the encrypted payload. This ensures that the message was not tampered with. It was intentionally left out of the example because it provides no further demonstration of the problem. Normally you would also see a <code>Base64</code> encode/decode operation along with the encryption. That is being done in our <code>RequestHandler</code> object. There are many other ciphers and block modes of operation. Some are arguably better at this task. This example code aims to provide a sample that is still considered
 sound and valid for use while demonstrating the problem.</p>
 
                     
