@@ -1,12 +1,6 @@
 # Encrypt/Decrypt
 
-For our encrypt and decrypt examples we will be using `AES-128-CBC`, or 128 bit AES encryption
-using the [Cipher Block Chaining](http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher-block_chaining_.28CBC.29)
-mode of operation. This mode requires us to provide an initialization vector unique to each
-message that will be distributed along with the message. The encryption key is stored in a Java
-[KeyStore](http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html). The key will be
-loaded during the encrypt/decrypt process. The key will not be loaded with the intent of keeping
-it in memory for the duration of program execution. Let's take a look at our `Crypto` class:
+For our encrypt and decrypt examples we will be using `AES-128-CBC`, or 128 bit AES encryption using the [Cipher Block Chaining](http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher-block_chaining_.28CBC.29) mode of operation. This mode requires us to provide an initialization vector unique to each message that will be distributed along with the message. The encryption key is stored in a Java [KeyStore](http://docs.oracle.com/javase/8/docs/api/java/security/KeyStore.html). The key will be loaded during the encrypt/decrypt process. The key will not be loaded with the intent of keeping it in memory for the duration of program execution. Let's take a look at our `Crypto` class:
 
 ```java
 import javax.crypto.*;
@@ -41,10 +35,7 @@ public final class Crypto {
     }
 ```
 
-First, we encounter our `encrypt()` method. This method takes a `byte[]` containing the message we
-wish to encrypt. It loads the encryption key, generates the initialization vector, and encrypts
-the message. Finally, it packs the initialization vector and the encrypted message together and
-returns it to the caller. Let's take a look at the supporting methods.
+First, we encounter our `encrypt()` method. This method takes a `byte[]` containing the message we wish to encrypt. It loads the encryption key, generates the initialization vector, and encrypts the message. Finally, it packs the initialization vector and the encrypted message together and returns it to the caller. Let's take a look at the supporting methods. You will notice that all of the methods in the `Crypto` class are static. This is an attempt to avoid instantiating an object that could possibly hold on to data longer than it needs to. It is also a generally accepted practice for data that is purely derived.
 
 ```java
     private static Key loadKey() {
@@ -76,8 +67,7 @@ returns it to the caller. Let's take a look at the supporting methods.
 
 ```
 
-We have seen the `loadKey()` method previously. We used it to dump our encryption key so we could
-search for it on the heap.
+We have seen the `loadKey()` method previously. We used it to dump our encryption key so we could search for it on the heap.
 
 ```java
     private static byte[] generateIv() {
@@ -95,9 +85,7 @@ search for it on the heap.
     }
 ```
 
-Next we have our `generateIv()` and `pack()` methods. They are pretty self explanatory. The only
-thing to note here is that we are using Java's `SecureRandom` class to produce the data for our
-initialization vector. Now we can look at our `decrypt()` method.
+Next we have our `generateIv()` and `pack()` methods. They are pretty self explanatory. The only thing to note here is that we are using Java's `SecureRandom` class to produce the data for our initialization vector. Now we can look at our `decrypt()` method.
 
 ```java
     public static byte[] decrypt(final byte[] encryptedBytes) throws CryptoException {
@@ -115,9 +103,7 @@ initialization vector. Now we can look at our `decrypt()` method.
     }
 ```
 
-As we expect `decrypt()` is a lot like `encrypt()`. It loads the key, extracts the initialization
-vector and the message, and performs the decrypt operation. the following support methods are used
-to unpack the message into the proper parts.
+As we expect `decrypt()` is a lot like `encrypt()`. It loads the key, extracts the initialization vector and the message, and performs the decrypt operation. the following support methods are used to unpack the message into the proper parts.
 
 ```java
     private static byte[] getIv(final byte[] encryptedBytes) {
@@ -135,11 +121,5 @@ to unpack the message into the proper parts.
 }
 ```
 
-There are a few things we are missing in this code. The most noteworthy is that the encryption is
-not being verified. Normally there would be an additional step where we use `HMAC` to sign the
-encrypted payload. This ensures that the message was not tampered with. It was intentionally left
-out of the example because it provides no further demonstration of the problem. Normally you would
-also see a `Base64` encode/decode operation along with the encryption. That is being done in our
-`RequestHandler` object. There are many other ciphers and block modes of operation. Some are
-arguably better at this task. This example code aims to provide a sample that is still considered
+There are a few things we are missing in this code. The most noteworthy is that the encryption is not being verified. Normally there would be an additional step where we use `HMAC` to sign the encrypted payload. This ensures that the message was not tampered with. It was intentionally left out of the example because it provides no further demonstration of the problem. Normally you would also see a `Base64` encode/decode operation along with the encryption. That is being done in our `RequestHandler` object. There are many other ciphers and block modes of operation. Some are arguably better at this task. This example code aims to provide a sample that is still considered
 sound and valid for use while demonstrating the problem.

@@ -1,4 +1,4 @@
-# Byte Arrays
+# Dealing With Byte Arrays
 
 This example attempts to demonstrate a primary scenario for which this
 problem is present. The sample was built using Java 8.

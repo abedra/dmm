@@ -77,6 +77,4 @@ public class RequestHandler {
 }
 ```
 
-The `encrypt()` and `decrypt()` methods here are the methods we will focus on. They call our
-`Crypto` class which performs the actual encryption operations. We will examine these methods
-shortly.
+The `encrypt()` and `decrypt()` methods are the methods we will focus on. They call our `Crypto` class which performs the actual encryption operations. We will examine these methods shortly.

@@ -1,23 +1,16 @@
 # Analyzing the Heap
 
-After the request is finalized we can take a look at the heap of the running instance to see what
-is left. The first thing we need to do is dump the current heap to a file for analysis.
+After the request is finalized we can take a look at the heap of the running instance to see what is left. The first thing we need to do is dump the current heap to a file for analysis.
 
 ```sh
 jmap -dump:file=heap.hprof <process_id>
 ```
 
-We will use this file in our analysis. Keeping in the spirit of using tools provided by the
-language, we will use `jvisualvm` to analyze our file. We will launch the tool and load our heap
-dump. Before we go searching we are going to get a better idea of what to search for. This should
-be considered cheating, as an attacker wouldn't have the key before looking for it. For the
-purpose of demonstration we can isolate our search given the information and get to the issue
-faster.
+We will use this file in our analysis. Keeping in the spirit of using tools provided by the language, we will use `jvisualvm` to analyze our file. We will launch the tool and load our heap dump. Before we go searching we are going to get a better idea of what to search for. This should be considered cheating, as an attacker wouldn't have the key before looking for it. For the purpose of demonstration we can isolate our search given the information and get to the issue faster.
 
 The following code will load our keystore and print the encryption key:
 
-## Grabbing the encryption key
-
+***DumpKey.java***
 ```java
 import java.io.FileInputStream;
 import java.io.IOException;
