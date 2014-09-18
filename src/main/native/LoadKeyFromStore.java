@@ -31,6 +31,8 @@ public final class LoadKeyFromStore {
             throw new RuntimeException("Could not load key");
         }
 
+        System.gc();
+
         while (true) {
             // Just a noop to keep the program running so I can take a heap dump after the key is loaded
         }
