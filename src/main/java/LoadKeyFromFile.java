@@ -7,8 +7,7 @@ import java.util.Arrays;
 public class LoadKeyFromFile {
     public static void main(String[] args) {
         try {
-            ByteBuffer key = ByteBuffer.allocateDirect(16);
-            key = ByteBuffer.wrap(Files.readAllBytes(Paths.get("src/main/resources/keyfile")));
+            ByteBuffer key = ByteBuffer.wrap(Files.readAllBytes(Paths.get("src/main/resources/keyfile")));
             for (int i = 0; i < 16; i++) {
                 key.put((byte)0);
                 key.position(i++);
